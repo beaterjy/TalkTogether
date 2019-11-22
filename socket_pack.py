@@ -17,7 +17,7 @@ class Server(object):
 
     def __init__(self, port=default_port):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.bind(('0.0.0.0', port))
+        self.sock.bind(('127.0.0.1', port))
         self.sock.listen()
         self.start_server()
 
@@ -118,7 +118,7 @@ class Client(object):
             # main input section
             # input_thread = threading.Thread(target=self.start_talking())
             # input_thread.start()
-            self.start_talking()
+            # self.start_talking()
 
         except ConnectionError as e:
             print("Connect Fail.")
@@ -138,7 +138,19 @@ class Client(object):
                 print("some error happens")
             finally:
                 pass
-
+    
+    # send the msg
+    def send_msg(self, text):
+        try:
+            msg = Msg(
+                    mode=Msg.TALK,
+                    data=text,
+                )
+            self.sock.send(Msg.encode(msg))
+        except Exception as e:
+            print("send error happens")
+            # other way to remind
+    
     def receive_msg(self):
         while True:
             try:
@@ -153,7 +165,9 @@ class Client(object):
                     pass
                 elif msg.mode == Msg.TALK:
                     # print the msg
-                    print("[%s:%s] > %s" % (msg.ip, msg.port, msg.data))
+                    # print("[%s:%s] > %s" % (msg.ip, msg.port, msg.data))
+                    # return the str(msg)
+                    return ("[%s:%s] > %s" % (msg.ip, msg.port, msg.data))
                 elif msg.mode == Msg.FINISH:
                     pass
 
